@@ -1,0 +1,56 @@
+---
+title: "Arsenal 1–2 Liverpool: Sabır, Szoboszlai ve üç puan"
+slug: arsenal-1-2-liverpool
+date: 2026-08-30
+opponent: Arsenal
+competition: Premier League
+venue: Emirates Stadium
+homeAway: Away
+score:
+  home: 1
+  away: 2
+result: W
+motm: dominik-szoboszlai
+tags:
+  - Premier League
+  - Away
+  - Szoboszlai
+excerpt: "Deplasmanda sabırlı bir performans, Szoboszlai'nin iki asisti ve kritik üç puan."
+social:
+  notes:
+    - "İkinci yarıda orta saha kontrolü."
+    - "Szoboszlai maçın kırılma noktasıydı."
+    - "Üç puandan fazlasını anlatan bir deplasman."
+draft: false
+---
+
+export const playerRatings = [
+  { playerId: "alisson", name: "Alisson", rating: 7 },
+  { playerId: "virgil-van-dijk", name: "Virgil van Dijk", rating: 8 },
+  { playerId: "dominik-szoboszlai", name: "Dominik Szoboszlai", rating: 9 },
+];
+
+## 90 dakikanın ardından
+
+Maçla ilgili kişisel değerlendirme metni burada yer alır. İlk yarı temkinliydi,
+ikinci yarıda orta saha kontrolü ele geçirildi ve Szoboszlai'nin iki asisti
+maçın kaderini belirledi.
+
+{/* motm is injected here by the page layer (component override), not authored in
+    the body — frontmatter.motm stays the single source of truth. See
+    app/matches/[slug]/page.tsx */}
+<PlayerRatings ratings={playerRatings} />
+
+## İyi
+
+- İkinci yarı pressing yoğunluğu
+- Sağ kanat rotasyonu
+
+## Kötü
+
+- İlk 20 dakikadaki pas kayıpları
+
+## Oyuncu notları
+
+Yukarıdaki `PlayerRatings` bileşeni tüm oyuncu notlarını kart olarak render eder;
+serbest metin burada devam eder.

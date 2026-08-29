@@ -1,0 +1,512 @@
+/* =========================================================================
+   After the Whistle — Design System
+   =========================================================================
+
+   BRAND: A personal Liverpool matchday journal — closer to a fanzine or a
+   matchday programme kept after full time than a club news site. Quiet
+   confidence, not a highlights reel.
+
+   PALETTE (warm ink/paper, not a flat near-black-and-one-accent look):
+     --ink          #14120F   page background — warm near-black, floodlit-
+                               stadium-at-night undertone, not a cold #000
+     --ink-raised   #1D1A16   cards, elevated surfaces
+     --paper        #F2EDE2   primary text — warm off-white, "programme
+                               paper", never stark #fff
+     --paper-dim    #9C9482   secondary/meta text
+     --liver-red    #C8102E   the ONE accent — used only for the result
+                               stamp, MOTM mark, and link hover. Never a
+                               background fill.
+     --pitch        #4C7A4B  secondary accent — reserved for future
+                               editorial use (e.g. an "away day" tag);
+                               NOT used for the loss stamp, since green
+                               reading as a loss is counter-intuitive
+     --steel        #5B6B78  cold, muted blue-grey — used only for the
+                               loss stamp. Warm palette everywhere else
+                               makes this one cold note legible as "L"
+                               without reaching for a second red or an
+                               on-the-nose color like orange/amber
+     --hairline     #322D24   borders and rules
+
+   TYPE: Fraunces (display) for headlines, scorelines, and the wordmark —
+   a serif with real personality, used with restraint. Inter (body) for
+   copy, nav, labels, and data. The two are never mixed within one text
+   element.
+
+   SIGNATURE: the "stamp" — a rotated ink-stamp mark (dashed ring + bold
+   numeral/letters) reused for match result (W/D/L) and Man of the Match.
+   One recurring device standing in for "the notable, official mark on
+   this page" — a nod to a teamsheet stamp in a programme margin — rather
+   than a decorative flourish invented separately for each context.
+   ========================================================================= */
+
+:root {
+  --ink: #14120f;
+  --ink-raised: #1d1a16;
+  --paper: #f2ede2;
+  --paper-dim: #9c9482;
+  --liver-red: #c8102e;
+  --pitch: #4c7a4b;
+  --steel: #5b6b78;
+  --hairline: #322d24;
+
+  --font-display-family: var(--font-display), "Fraunces", Georgia, serif;
+  --font-body-family: var(--font-body), "Inter", system-ui, sans-serif;
+
+  --container: 760px;
+  --container-wide: 1040px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-body-family);
+  font-size: 17px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--liver-red);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ---------- Site shell ---------- */
+
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: var(--container-wide);
+  margin: 0 auto;
+  padding: 28px 24px;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.site-header__wordmark {
+  font-family: var(--font-display-family);
+  font-weight: 600;
+  font-size: 19px;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+}
+
+.site-header__nav {
+  display: flex;
+  gap: 28px;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.site-header__nav a {
+  text-decoration: none;
+  color: var(--paper-dim);
+  transition: color 0.15s ease;
+}
+
+.site-header__nav a:hover {
+  color: var(--liver-red);
+}
+
+/* ---------- Eyebrow / meta row (shared) ---------- */
+
+.eyebrow {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--paper-dim);
+}
+
+/* ---------- Stamp badge (signature element) ---------- */
+
+.stamp {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transform: rotate(-4deg);
+}
+
+.stamp__ring {
+  position: absolute;
+  inset: -10px -14px;
+  border: 2px dashed currentColor;
+  border-radius: 50%;
+  opacity: 0.55;
+}
+
+.stamp--regular .stamp__ring {
+  inset: -12px -18px;
+}
+
+.stamp__text {
+  font-family: var(--font-display-family);
+  font-weight: 900;
+  font-size: 22px;
+  letter-spacing: 0.02em;
+}
+
+.stamp--small .stamp__text {
+  font-size: 15px;
+}
+
+.stamp__label {
+  font-family: var(--font-body-family);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--paper-dim);
+  transform: rotate(4deg);
+}
+
+.stamp--w {
+  color: var(--liver-red);
+}
+.stamp--d {
+  color: var(--paper-dim);
+}
+.stamp--l {
+  color: var(--steel);
+}
+.stamp--motm {
+  color: var(--liver-red);
+}
+
+/* ---------- Homepage ---------- */
+
+.home {
+  max-width: var(--container-wide);
+  margin: 0 auto;
+  padding: 56px 24px 96px;
+}
+
+.home__latest {
+  margin-bottom: 72px;
+}
+
+.home__tagline {
+  margin-bottom: 40px;
+}
+
+.home__previous h2 {
+  font-family: var(--font-display-family);
+  font-weight: 600;
+  font-size: 22px;
+  margin-bottom: 24px;
+}
+
+.home__previous-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 28px;
+}
+
+/* ---------- Match card ---------- */
+
+.match-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.match-card__thumb {
+  width: 100%;
+  aspect-ratio: 1200 / 630;
+  object-fit: cover;
+  border-bottom: 1px solid var(--hairline);
+  margin-bottom: 20px;
+  background: var(--ink-raised);
+}
+
+.match-card--large .match-card__thumb {
+  margin-bottom: 32px;
+}
+
+.match-card__meta {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.match-card__title {
+  font-family: var(--font-display-family);
+  font-weight: 600;
+  font-size: 26px;
+  line-height: 1.15;
+  margin: 0 0 16px;
+}
+
+.match-card--large .match-card__title {
+  font-size: clamp(2rem, 4vw, 3.25rem);
+}
+
+.match-card__score {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 14px;
+  font-family: var(--font-body-family);
+  font-weight: 600;
+}
+
+.match-card__opponent {
+  color: var(--paper-dim);
+  font-weight: 400;
+}
+
+.match-card__excerpt {
+  color: var(--paper-dim);
+  font-size: 15px;
+  margin: 0;
+  max-width: 60ch;
+}
+
+/* ---------- Match article ---------- */
+
+.match-page {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 48px 24px 96px;
+}
+
+.match-page__header {
+  margin: 28px 0 40px;
+}
+
+.match-page__header h1 {
+  font-family: var(--font-display-family);
+  font-weight: 600;
+  font-size: clamp(2.1rem, 5vw, 3.4rem);
+  line-height: 1.08;
+  margin: 10px 0 20px;
+}
+
+.match-page__score-row {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  margin-top: 8px;
+}
+
+.match-page__score {
+  font-family: var(--font-display-family);
+  font-weight: 900;
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  margin: 0;
+}
+
+.match-page__hero {
+  width: 100%;
+  aspect-ratio: 1200 / 630;
+  object-fit: cover;
+  border: 1px solid var(--hairline);
+  margin-bottom: 40px;
+}
+
+.match-page__body {
+  font-size: 18px;
+  line-height: 1.75;
+}
+
+.match-page__body h2 {
+  font-family: var(--font-display-family);
+  font-weight: 600;
+  font-size: 22px;
+  margin: 44px 0 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.match-page__body p {
+  color: var(--paper);
+}
+
+.match-page__body ul {
+  padding-left: 22px;
+}
+
+/* ---------- Player ratings ---------- */
+
+.player-ratings {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 32px;
+  border-top: 1px solid var(--hairline);
+}
+
+.player-ratings__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 4px;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.player-ratings__item.is-motm {
+  background: linear-gradient(90deg, rgba(200, 16, 46, 0.08), transparent 60%);
+}
+
+.player-ratings__name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+}
+
+.player-ratings__score {
+  font-family: var(--font-display-family);
+  font-weight: 900;
+  font-size: 20px;
+  min-width: 2ch;
+  text-align: right;
+}
+
+/* ---------- Share buttons ---------- */
+
+.share-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 40px;
+  padding-top: 32px;
+  border-top: 1px solid var(--hairline);
+}
+
+.share-buttons__link {
+  padding: 10px 16px;
+  border: 1px solid var(--hairline);
+  color: var(--paper);
+  text-decoration: none;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.share-buttons__link:hover {
+  border-color: var(--liver-red);
+  color: var(--liver-red);
+}
+
+/* ---------- Secondary pages (about, seasons, players, 90+) ---------- */
+
+.about,
+.season-archive,
+.player-page,
+.ninety-plus-index,
+.ninety-plus-page {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 56px 24px 96px;
+}
+
+.about h1,
+.season-archive h1,
+.player-page h1,
+.ninety-plus-index h1 {
+  font-family: var(--font-display-family);
+  font-weight: 600;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  margin-bottom: 28px;
+}
+
+.season-archive__list {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.player-page__average {
+  color: var(--paper-dim);
+  margin-bottom: 28px;
+}
+
+.player-page__ratings {
+  list-style: none;
+  padding: 0;
+  border-top: 1px solid var(--hairline);
+}
+
+.player-page__ratings li {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.player-page__ratings a {
+  text-decoration: none;
+  border-bottom: 1px dotted var(--paper-dim);
+}
+
+.ninety-plus-index ul {
+  list-style: none;
+  padding: 0;
+}
+
+.ninety-plus-index li {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.ninety-plus-index a {
+  text-decoration: none;
+}
+
+.ninety-plus-page__date {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--paper-dim);
+  margin-bottom: 20px;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 640px) {
+  .site-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 20px;
+  }
+
+  .site-header__nav {
+    gap: 18px;
+  }
+
+  .home {
+    padding: 40px 18px 72px;
+  }
+
+  .match-page {
+    padding: 36px 18px 72px;
+  }
+
+  .match-page__score-row {
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+
+  .home__previous-grid {
+    grid-template-columns: 1fr;
+  }
+}

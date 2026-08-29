@@ -1,0 +1,20 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+# Netlify auto-detects Next.js and provisions the OpenNext adapter —
+# App Router, SSG/ISR, and Route Handlers (including
+# app/api/social/[slug]/route.ts) are handled zero-config. No manual
+# adapter version pin, per Netlify's own recommendation.
+
+[functions]
+  node_bundler = "esbuild"
+  included_files = ["assets/fonts/**"]
+
+# Safety net for the OpenNext-provisioned function backing
+# app/api/social/[slug]/route.ts, in case @resvg/resvg-js (a native
+# addon) needs to be excluded from inlining. This does NOT create a
+# second function — see spec Bölüm 10 for the explicit-Netlify-Function
+# fallback path if this ever proves insufficient.
+[functions."api-social"]
+  external_node_modules = ["@resvg/resvg-js"]

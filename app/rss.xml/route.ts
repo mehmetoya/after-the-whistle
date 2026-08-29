@@ -1,0 +1,40 @@
+import fs from "node:fs";
+import path from "node:path";
+import { NextResponse } from "next/server";
+import type { MatchIndexEntry } from "@/lib/social";
+import { SITE_URL } from "@/lib/social";
+
+function getMatches(): MatchIndexEntry[] {
+  const file = path.join(process.cwd(), ".generated", "matches.json");
+  if (!fs.existsSync(file)) return [];
+  return JSON.parse(fs.readFileSync(file, "utf8"));
+}
+
+export async function GET() {
+  const matches = getMatches();
+
+  const items = matches
+    .map(
+      (m) => `
+    <item>
+      <title>${m.title}</title>
+      <link>${SITE_URL}/matches/${m.slug}</link>
+      <guid>${SITE_URL}/matches/${m.slug}</guid>
+      <pubDate>${new Date(m.date).toUTCString()}</pubDate>
+      <description><![CDATA[${m.excerpt}]]></description>
+    </item>`
+    )
+    .join("");
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>After the Whistle</title>
+    <link>${SITE_URL}</link>
+    <description>Liverpool maç sonu notları</description>
+    ${items}
+  </channel>
+</rss>`;
+
+  return new NextResponse(xml, { headers: { "Content-Type": "application/xml" } });
+}
