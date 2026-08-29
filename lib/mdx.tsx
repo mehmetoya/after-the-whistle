@@ -15,6 +15,11 @@ export async function getMatchSource(slug: string) {
     const { data, content } = matter(raw);
     if (data.slug === slug) {
       const frontmatter = MatchFrontmatterSchema.parse(data);
+      // Draft posts are excluded from .generated/* (home, sitemap, RSS,
+      // season archive) by compile-content.ts, but that alone doesn't stop
+      // someone hitting the direct URL — enforce the same rule here so a
+      // draft is genuinely unpublished, not just unlisted.
+      if (frontmatter.draft) return null;
       return { frontmatter, content };
     }
   }

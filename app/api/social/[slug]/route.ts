@@ -40,7 +40,13 @@ function loadMatch(slug: string) {
   for (const file of files) {
     const raw = fs.readFileSync(path.join(dir, file), "utf8");
     const { data } = matter(raw);
-    if (data.slug === slug) return MatchFrontmatterSchema.parse(data);
+    if (data.slug === slug) {
+      const frontmatter = MatchFrontmatterSchema.parse(data);
+      // Same draft rule as lib/mdx.ts's getMatchSource: an unpublished
+      // post shouldn't get a shareable social card either.
+      if (frontmatter.draft) return null;
+      return frontmatter;
+    }
   }
   return null;
 }

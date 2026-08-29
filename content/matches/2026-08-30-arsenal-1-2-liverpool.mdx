@@ -21,8 +21,23 @@ social:
     - "İkinci yarıda orta saha kontrolü."
     - "Szoboszlai maçın kırılma noktasıydı."
     - "Üç puandan fazlasını anlatan bir deplasman."
-draft: false
+draft: true
 ---
+
+<!--
+  Bu dosya, After the Whistle'ın frontmatter + named-export şemasını
+  gösteren bir ŞABLON'dur — gerçek bir maç yazısı değil. draft: true
+  olduğu için content:build bunu .generated/*.json'a dahil etmiyor,
+  yani production'da görünmüyor.
+
+  İlk gerçek yazını yazarken:
+  1. Bu dosyayı kopyala, yeni dosya adını "posts/YYYY-MM-DD-slug.mdx"
+     formatında ver.
+  2. Frontmatter'ı gerçek maç bilgileriyle doldur.
+  3. draft: false yap.
+  4. Aşağıdaki örnek metinleri kendi yorumunla değiştir.
+-->
+
 
 export const playerRatings = [
   { playerId: "alisson", name: "Alisson", rating: 7 },
