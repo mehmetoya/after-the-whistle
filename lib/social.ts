@@ -1,7 +1,14 @@
 import crypto from "node:crypto";
 import type { MatchFrontmatter } from "./schema";
 
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://afterthewhistle.example";
+// Trailing slash is stripped defensively: if the env var is set with one
+// (e.g. copied straight from a browser address bar — confirmed to happen
+// on the real Netlify deploy), naive `${SITE_URL}/path` concatenation
+// elsewhere would produce a double slash in canonical/OG/JSON-LD URLs.
+export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://afterthewhistle.example").replace(
+  /\/+$/,
+  ""
+);
 
 export type SocialVariant = "og" | "instagram" | "story";
 
