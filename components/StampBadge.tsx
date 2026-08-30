@@ -17,9 +17,11 @@ export default function StampBadge(props: Props) {
 
   if (props.kind === "motm") {
     return (
-      <span className={`stamp stamp--motm stamp--${size}`}>
-        <span className="stamp__ring" aria-hidden="true" />
-        <span className="stamp__text">MOTM</span>
+      <span className={`pill pill--motm pill--${size}`}>
+        <span className="pill__text" aria-hidden="true">
+          ★
+        </span>
+        <span className="pill__label">MOTM</span>
       </span>
     );
   }
@@ -27,10 +29,9 @@ export default function StampBadge(props: Props) {
   const label = t(props.locale).resultLabel[props.result];
 
   return (
-    <span className={`stamp stamp--result stamp--${props.result.toLowerCase()} stamp--${size}`}>
-      <span className="stamp__ring" aria-hidden="true" />
-      <span className="stamp__text">{props.result}</span>
-      {size === "regular" && <span className="stamp__label">{label}</span>}
+    <span className={`pill pill--${props.result.toLowerCase()} pill--${size}`}>
+      <span className="pill__text">{props.result}</span>
+      {size === "regular" && <span className="pill__label">{label}</span>}
     </span>
   );
 }

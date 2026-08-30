@@ -16,22 +16,22 @@ import { LOCALES, DEFAULT_LOCALE, type Locale } from "@/lib/i18n";
 
 // Brand tokens, kept in sync with styles/globals.css by hand (satori can't
 // read CSS custom properties, so these are the same hex values restated).
+// v2 (Modern Sports Media): saturated W/D/L colors instead of the earlier
+// muted editorial palette.
 const TOKENS = {
   ink: "#14120f",
   paper: "#f2ede2",
   paperDim: "#9c9482",
-  liverRed: "#c8102e",
-  steel: "#5b6b78",
+  win: "#c8102e",
+  draw: "#f2a900",
+  loss: "#2f6fed",
 };
 
-// Same W/D/L → color mapping as .stamp--w/d/l in styles/globals.css.
-// The satori template previously hardcoded liverRed for every result,
-// so a draw or loss card showed the win color — caught via a live
-// screenshot on the Nottingham Forest (draw) post.
-const RESULT_COLOR: Record<"W" | "D" | "L", string> = {
-  W: TOKENS.liverRed,
-  D: TOKENS.paperDim,
-  L: TOKENS.steel,
+// Same W/D/L → color mapping as .pill--w/d/l in styles/globals.css.
+const RESULT_COLOR: Record<"W" | "D" | "L", { bg: string; fg: string }> = {
+  W: { bg: TOKENS.win, fg: "#fff" },
+  D: { bg: TOKENS.draw, fg: TOKENS.ink },
+  L: { bg: TOKENS.loss, fg: "#fff" },
 };
 
 const SIZES = {
@@ -80,14 +80,11 @@ function template(frontmatter: NonNullable<ReturnType<typeof loadMatch>>, varian
   const notes = cardText(frontmatter);
   const isStory = variant === "story";
   const siteLabel = SITE_URL.replace(/^https?:\/\//, "");
+  const resultColor = RESULT_COLOR[frontmatter.result];
 
   // Headline must always say "Liverpool" explicitly and follow the same
   // home-team-first convention as the post title itself (e.g. "Arsenal
   // 1–2 Liverpool" away, "Liverpool 2–2 Nottingham Forest" home).
-  // The previous version always wrote `${opponent} ${score}` with no
-  // "Liverpool" anywhere — for a home match this both reversed the team
-  // order and, worse, produced a card that never named the blog's own
-  // club, so a shared card could read as the opponent's account.
   const headline =
     frontmatter.homeAway === "Home"
       ? `Liverpool ${frontmatter.score.home}–${frontmatter.score.away} ${frontmatter.opponent}`
@@ -108,7 +105,7 @@ function template(frontmatter: NonNullable<ReturnType<typeof loadMatch>>, varian
         fontFamily: "Inter, InterExt",
       },
       children: [
-        // Eyebrow row — competition label + rotated result stamp, echoing
+        // Eyebrow row — competition label + solid-fill result pill, echoing
         // the same signature device used on the site itself.
         {
           type: "div",
@@ -132,14 +129,14 @@ function template(frontmatter: NonNullable<ReturnType<typeof loadMatch>>, varian
                 type: "div",
                 props: {
                   style: {
-                    fontFamily: "Fraunces, FrauncesExt",
-                    fontWeight: 700,
-                    fontSize: isStory ? 40 : 30,
-                    color: RESULT_COLOR[frontmatter.result],
-                    border: `3px dashed ${RESULT_COLOR[frontmatter.result]}`,
+                    display: "flex",
+                    fontFamily: "Archivo, ArchivoExt",
+                    fontWeight: 900,
+                    fontSize: isStory ? 34 : 26,
+                    color: resultColor.fg,
+                    backgroundColor: resultColor.bg,
                     borderRadius: 999,
-                    padding: isStory ? "8px 22px" : "6px 18px",
-                    transform: "rotate(-4deg)",
+                    padding: isStory ? "10px 26px" : "8px 20px",
                   },
                   children: frontmatter.result,
                 },
@@ -156,10 +153,11 @@ function template(frontmatter: NonNullable<ReturnType<typeof loadMatch>>, varian
                 type: "div",
                 props: {
                   style: {
-                    fontFamily: "Fraunces, FrauncesExt",
-                    fontSize: isStory ? 92 : 68,
-                    fontWeight: 700,
+                    fontFamily: "Archivo, ArchivoExt",
+                    fontSize: isStory ? 88 : 64,
+                    fontWeight: 900,
                     lineHeight: 1.05,
+                    letterSpacing: "-0.01em",
                   },
                   children: headline,
                 },
@@ -207,26 +205,26 @@ export async function GET(req: NextRequest, { params }: { params: { slug: string
 
   // Loaded once per cold start in a real deployment; fonts live in
   // assets/fonts/ and are bundled via netlify.toml `included_files`.
-  // WOFF (not WOFF2 — satori doesn't decompress WOFF2). Fraunces carries
-  // the headline/stamp (matching the site's display face), Inter carries
+  // WOFF (not WOFF2 — satori doesn't decompress WOFF2). Archivo carries
+  // the headline/pill (matching the site's display face), Inter carries
   // everything else — the same two-role type system as styles/globals.css.
   const fontDir = path.join(process.cwd(), "assets", "fonts");
   const interRegular = path.join(fontDir, "Inter-Regular.woff");
   const interBold = path.join(fontDir, "Inter-Bold.woff");
-  const frauncesBold = path.join(fontDir, "Fraunces-Bold.woff");
+  const archivoBlack = path.join(fontDir, "Archivo-Black.woff");
   // Latin-ext fallbacks — Turkish characters like İ, ğ live outside the base
   // Latin subset. Unlike a browser, Satori has no OS-level font fallback,
   // and (confirmed against this scaffold) registering two font buffers
   // under the *same* family name does NOT give per-glyph fallback — Satori
   // only uses the first. The fix is a CSS-style font-family stack: the ext
-  // file gets its own family name ("InterExt"/"FrauncesExt") and the
+  // file gets its own family name ("InterExt"/"ArchivoExt") and the
   // template's fontFamily is set to "Inter, InterExt" etc., exactly like a
   // browser font stack.
   const interRegularExt = path.join(fontDir, "Inter-Regular-Ext.woff");
   const interBoldExt = path.join(fontDir, "Inter-Bold-Ext.woff");
-  const frauncesBoldExt = path.join(fontDir, "Fraunces-Bold-Ext.woff");
+  const archivoBlackExt = path.join(fontDir, "Archivo-Black-Ext.woff");
 
-  const required = [interRegular, interBold, frauncesBold, interRegularExt, interBoldExt, frauncesBoldExt];
+  const required = [interRegular, interBold, archivoBlack, interRegularExt, interBoldExt, archivoBlackExt];
   if (!required.every(fs.existsSync)) {
     return NextResponse.json(
       { error: "font assets missing under assets/fonts/ — see README for the full required set" },
@@ -242,8 +240,8 @@ export async function GET(req: NextRequest, { params }: { params: { slug: string
       { name: "InterExt", data: fs.readFileSync(interRegularExt), weight: 400, style: "normal" },
       { name: "Inter", data: fs.readFileSync(interBold), weight: 700, style: "normal" },
       { name: "InterExt", data: fs.readFileSync(interBoldExt), weight: 700, style: "normal" },
-      { name: "Fraunces", data: fs.readFileSync(frauncesBold), weight: 700, style: "normal" },
-      { name: "FrauncesExt", data: fs.readFileSync(frauncesBoldExt), weight: 700, style: "normal" },
+      { name: "Archivo", data: fs.readFileSync(archivoBlack), weight: 900, style: "normal" },
+      { name: "ArchivoExt", data: fs.readFileSync(archivoBlackExt), weight: 900, style: "normal" },
     ],
   });
 

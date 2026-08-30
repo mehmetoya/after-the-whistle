@@ -1,5 +1,5 @@
 import "@/styles/globals.css";
-import { fraunces, inter } from "@/lib/fonts";
+import { archivo, inter } from "@/lib/fonts";
 
 export const metadata = {
   title: "After the Whistle",
@@ -8,7 +8,7 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="tr" className={`${fraunces.variable} ${inter.variable}`}>
+    <html lang="tr" className={`${archivo.variable} ${inter.variable}`}>
       <body>{children}</body>
     </html>
   );
