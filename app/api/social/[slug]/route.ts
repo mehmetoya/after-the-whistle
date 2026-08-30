@@ -20,6 +20,17 @@ const TOKENS = {
   paper: "#f2ede2",
   paperDim: "#9c9482",
   liverRed: "#c8102e",
+  steel: "#5b6b78",
+};
+
+// Same W/D/L → color mapping as .stamp--w/d/l in styles/globals.css.
+// The satori template previously hardcoded liverRed for every result,
+// so a draw or loss card showed the win color — caught via a live
+// screenshot on the Nottingham Forest (draw) post.
+const RESULT_COLOR: Record<"W" | "D" | "L", string> = {
+  W: TOKENS.liverRed,
+  D: TOKENS.paperDim,
+  L: TOKENS.steel,
 };
 
 const SIZES = {
@@ -118,8 +129,8 @@ function template(frontmatter: NonNullable<ReturnType<typeof loadMatch>>, varian
                     fontFamily: "Fraunces, FrauncesExt",
                     fontWeight: 700,
                     fontSize: isStory ? 40 : 30,
-                    color: TOKENS.liverRed,
-                    border: `3px dashed ${TOKENS.liverRed}`,
+                    color: RESULT_COLOR[frontmatter.result],
+                    border: `3px dashed ${RESULT_COLOR[frontmatter.result]}`,
                     borderRadius: 999,
                     padding: isStory ? "8px 22px" : "6px 18px",
                     transform: "rotate(-4deg)",
