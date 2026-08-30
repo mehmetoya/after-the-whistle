@@ -6,6 +6,7 @@ import { Resvg } from "@resvg/resvg-js";
 import matter from "gray-matter";
 import { MatchFrontmatterSchema } from "@/lib/schema";
 import { computeContentHash, SITE_URL } from "@/lib/social";
+import { LOCALES, DEFAULT_LOCALE, type Locale } from "@/lib/i18n";
 
 // This is a plain Next.js Route Handler (app/api/social/[slug]/route.ts) —
 // NOT a hand-written netlify/functions/api-social.ts. Netlify's OpenNext
@@ -45,8 +46,13 @@ function isVariant(v: string | null): v is Variant {
   return v === "og" || v === "instagram" || v === "story";
 }
 
-function loadMatch(slug: string) {
-  const dir = path.join(process.cwd(), "content", "matches");
+function isLocale(v: string | null): v is Locale {
+  return v !== null && (LOCALES as string[]).includes(v);
+}
+
+function loadMatch(slug: string, locale: Locale) {
+  const dir = path.join(process.cwd(), "content", "matches", locale);
+  if (!fs.existsSync(dir)) return null;
   const files = fs.readdirSync(dir).filter((f) => f.endsWith(".mdx"));
   for (const file of files) {
     const raw = fs.readFileSync(path.join(dir, file), "utf8");
@@ -189,8 +195,10 @@ export async function GET(req: NextRequest, { params }: { params: { slug: string
   const { searchParams } = new URL(req.url);
   const variantParam = searchParams.get("variant");
   const variant: Variant = isVariant(variantParam) ? variantParam : "og";
+  const localeParam = searchParams.get("locale");
+  const locale: Locale = isLocale(localeParam) ? localeParam : DEFAULT_LOCALE;
 
-  const frontmatter = loadMatch(params.slug);
+  const frontmatter = loadMatch(params.slug, locale);
   if (!frontmatter) {
     return NextResponse.json({ error: "match not found" }, { status: 404 });
   }

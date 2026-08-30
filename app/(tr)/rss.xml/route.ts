@@ -1,17 +1,10 @@
-import fs from "node:fs";
-import path from "node:path";
 import { NextResponse } from "next/server";
-import type { MatchIndexEntry } from "@/lib/social";
-import { SITE_URL } from "@/lib/social";
-
-function getMatches(): MatchIndexEntry[] {
-  const file = path.join(process.cwd(), ".generated", "matches.json");
-  if (!fs.existsSync(file)) return [];
-  return JSON.parse(fs.readFileSync(file, "utf8"));
-}
+import { SITE_URL, getMatchesIndex } from "@/lib/social";
+import { t } from "@/lib/i18n";
 
 export async function GET() {
-  const matches = getMatches();
+  const matches = getMatchesIndex("tr");
+  const dict = t("tr");
 
   const items = matches
     .map(
@@ -31,7 +24,7 @@ export async function GET() {
   <channel>
     <title>After the Whistle</title>
     <link>${SITE_URL}</link>
-    <description>Liverpool maç sonu notları</description>
+    <description>${dict.tagline}</description>
     ${items}
   </channel>
 </rss>`;

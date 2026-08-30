@@ -2,15 +2,17 @@ import Link from "next/link";
 import type { MatchIndexEntry } from "@/lib/social";
 import { socialImageUrl } from "@/lib/social";
 import StampBadge from "@/components/StampBadge";
+import { localePrefix, type Locale } from "@/lib/i18n";
 
 type Props = {
   match: MatchIndexEntry;
+  locale: Locale;
   size?: "large" | "regular";
 };
 
-export default function MatchCard({ match, size = "regular" }: Props) {
+export default function MatchCard({ match, locale, size = "regular" }: Props) {
   const scoreLabel = `${match.score.home}–${match.score.away}`;
-  const dateLabel = new Date(match.date).toLocaleDateString("tr-TR", {
+  const dateLabel = new Date(match.date).toLocaleDateString(locale === "tr" ? "tr-TR" : "en-GB", {
     day: "numeric",
     month: "long",
     year: "numeric",
@@ -18,10 +20,10 @@ export default function MatchCard({ match, size = "regular" }: Props) {
 
   // Cover image / generated-hero contract (spec Bölüm 9): coverImage if
   // licensed and provided, otherwise the auto-generated match card.
-  const thumbSrc = match.coverImage ?? socialImageUrl(match.slug, "og", match.contentHash);
+  const thumbSrc = match.coverImage ?? socialImageUrl(match.slug, "og", match.contentHash, locale);
 
   return (
-    <Link href={`/matches/${match.slug}`} className={`match-card match-card--${size}`}>
+    <Link href={`${localePrefix(locale)}/matches/${match.slug}`} className={`match-card match-card--${size}`}>
       <img className="match-card__thumb" src={thumbSrc} alt={match.title} />
       <div className="match-card__meta">
         <span className="eyebrow">{match.competition}</span>
@@ -29,7 +31,7 @@ export default function MatchCard({ match, size = "regular" }: Props) {
       </div>
       <h2 className="match-card__title">{match.title}</h2>
       <div className="match-card__score">
-        <StampBadge kind="result" result={match.result} size="small" />
+        <StampBadge kind="result" result={match.result} size="small" locale={locale} />
         <span>{scoreLabel}</span>
         <span className="match-card__opponent">{match.opponent}</span>
       </div>

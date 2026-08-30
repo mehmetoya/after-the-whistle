@@ -1,13 +1,16 @@
 import { SITE_URL, socialImageUrl } from "@/lib/social";
+import { t, localePrefix, type Locale } from "@/lib/i18n";
 
 type Props = {
   slug: string;
   title: string;
   contentHash: string;
+  locale: Locale;
 };
 
-export default function ShareButtons({ slug, title, contentHash }: Props) {
-  const url = `${SITE_URL}/matches/${slug}`;
+export default function ShareButtons({ slug, title, contentHash, locale }: Props) {
+  const dict = t(locale);
+  const url = `${SITE_URL}${localePrefix(locale)}/matches/${slug}`;
   const text = encodeURIComponent(title);
   const encodedUrl = encodeURIComponent(url);
 
@@ -19,7 +22,7 @@ export default function ShareButtons({ slug, title, contentHash }: Props) {
         target="_blank"
         rel="noopener noreferrer"
       >
-        X'te paylaş
+        {dict.shareX}
       </a>
       <a
         className="share-buttons__link"
@@ -27,7 +30,7 @@ export default function ShareButtons({ slug, title, contentHash }: Props) {
         target="_blank"
         rel="noopener noreferrer"
       >
-        WhatsApp'ta paylaş
+        {dict.shareWhatsApp}
       </a>
       <a
         className="share-buttons__link"
@@ -35,17 +38,17 @@ export default function ShareButtons({ slug, title, contentHash }: Props) {
         target="_blank"
         rel="noopener noreferrer"
       >
-        Bluesky'de paylaş
+        {dict.shareBluesky}
       </a>
       {/* Instagram doesn't support a direct share-URL intent — offer the
           generated asset for manual posting instead (see Bölüm 7). Hash
           keeps the download link pointed at the current version of the
           card, not a stale cached one. */}
-      <a className="share-buttons__link" href={socialImageUrl(slug, "instagram", contentHash)} download>
-        Instagram için görseli indir
+      <a className="share-buttons__link" href={socialImageUrl(slug, "instagram", contentHash, locale)} download>
+        {dict.shareInstagram}
       </a>
-      <a className="share-buttons__link" href={socialImageUrl(slug, "story", contentHash)} download>
-        Instagram Story için görseli indir
+      <a className="share-buttons__link" href={socialImageUrl(slug, "story", contentHash, locale)} download>
+        {dict.shareInstagramStory}
       </a>
     </div>
   );

@@ -1,14 +1,6 @@
-import fs from "node:fs";
-import path from "node:path";
 import type { MetadataRoute } from "next";
-import type { MatchIndexEntry } from "@/lib/social";
-import { SITE_URL } from "@/lib/social";
-
-function readJson<T>(file: string): T[] {
-  const full = path.join(process.cwd(), ".generated", file);
-  if (!fs.existsSync(full)) return [];
-  return JSON.parse(fs.readFileSync(full, "utf8"));
-}
+import { SITE_URL, getMatchesIndex, getPlayersIndex, getNinetyPlusIndex } from "@/lib/social";
+import { LOCALES, localePrefix } from "@/lib/i18n";
 
 function seasonSlugFor(date: string): string {
   const d = new Date(date);
@@ -19,18 +11,25 @@ function seasonSlugFor(date: string): string {
 }
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const matches = readJson<MatchIndexEntry>("matches.json");
-  const players = readJson<{ playerId: string }>("players.json");
-  const ninetyPlus = readJson<{ slug: string; date: string }>("ninety-plus.json");
-  const seasons = new Set(matches.map((m) => seasonSlugFor(String(m.date))));
+  const entries: MetadataRoute.Sitemap = [];
 
-  return [
-    { url: SITE_URL, lastModified: new Date() },
-    { url: `${SITE_URL}/about` },
-    { url: `${SITE_URL}/90-plus` },
-    ...matches.map((m) => ({ url: `${SITE_URL}/matches/${m.slug}`, lastModified: new Date(m.date) })),
-    ...Array.from(seasons).map((s) => ({ url: `${SITE_URL}/seasons/${s}` })),
-    ...players.map((p) => ({ url: `${SITE_URL}/players/${p.playerId}` })),
-    ...ninetyPlus.map((n) => ({ url: `${SITE_URL}/90-plus/${n.slug}`, lastModified: new Date(n.date) })),
-  ];
+  for (const locale of LOCALES) {
+    const prefix = localePrefix(locale);
+    const matches = getMatchesIndex(locale);
+    const players = getPlayersIndex(locale);
+    const ninetyPlus = getNinetyPlusIndex(locale);
+    const seasons = new Set(matches.map((m) => seasonSlugFor(String(m.date))));
+
+    entries.push(
+      { url: `${SITE_URL}${prefix || "/"}`, lastModified: new Date() },
+      { url: `${SITE_URL}${prefix}/about` },
+      { url: `${SITE_URL}${prefix}/90-plus` },
+      ...matches.map((m) => ({ url: `${SITE_URL}${prefix}/matches/${m.slug}`, lastModified: new Date(m.date) })),
+      ...Array.from(seasons).map((s) => ({ url: `${SITE_URL}${prefix}/seasons/${s}` })),
+      ...players.map((p) => ({ url: `${SITE_URL}${prefix}/players/${p.playerId}` })),
+      ...ninetyPlus.map((n) => ({ url: `${SITE_URL}${prefix}/90-plus/${n.slug}`, lastModified: new Date(n.date) }))
+    );
+  }
+
+  return entries;
 }

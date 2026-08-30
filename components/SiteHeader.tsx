@@ -1,15 +1,50 @@
-import Link from "next/link";
+"use client";
 
-export default function SiteHeader() {
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { t, localePrefix, type Locale } from "@/lib/i18n";
+
+type Props = {
+  locale: Locale;
+};
+
+/**
+ * The language-switch link is computed from the current pathname rather
+ * than passed down page-by-page: since every route shape mirrors 1:1
+ * across locales (same slugs, same season/player ids, just with/without
+ * the /en prefix), a pathname string transform gives an exact translated
+ * counterpart for any page — home, a specific match, a specific player —
+ * without prop-drilling through every layout and page component.
+ *
+ * This does mean switching languages on an EN post whose TR counterpart
+ * doesn't exist (or vice versa) lands on a 404 — acceptable for now since
+ * every published post is expected to exist in both locales; revisit if
+ * that stops being true.
+ */
+export default function SiteHeader({ locale }: Props) {
+  const dict = t(locale);
+  const prefix = localePrefix(locale);
+  const pathname = usePathname() ?? "/";
+
+  const switchHref =
+    locale === "tr"
+      ? `/en${pathname === "/" ? "" : pathname}`
+      : pathname.replace(/^\/en/, "") || "/";
+
+  const homeHref = prefix || "/";
+
   return (
     <header className="site-header">
-      <Link href="/" className="site-header__wordmark">
+      <Link href={homeHref} className="site-header__wordmark">
         After the Whistle
       </Link>
       <nav className="site-header__nav">
-        <Link href="/seasons/2026-27">Sezonlar</Link>
-        <Link href="/90-plus">90+</Link>
-        <Link href="/about">Hakkında</Link>
+        <Link href={`${prefix}/seasons/2026-27`}>{dict.navSeasons}</Link>
+        <Link href={`${prefix}/90-plus`}>{dict.navNinetyPlus}</Link>
+        <Link href={`${prefix}/about`}>{dict.navAbout}</Link>
+        <Link href={switchHref} className="site-header__lang">
+          {dict.langSwitchLabel}
+        </Link>
       </nav>
     </header>
   );
