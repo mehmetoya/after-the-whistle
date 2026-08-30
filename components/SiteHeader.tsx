@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { t, localePrefix, upperForLocale, type Locale } from "@/lib/i18n";
+import { t, localePrefix, type Locale } from "@/lib/i18n";
 
 type Props = {
   locale: Locale;
@@ -25,7 +25,6 @@ export default function SiteHeader({ locale }: Props) {
   const dict = t(locale);
   const prefix = localePrefix(locale);
   const pathname = usePathname() ?? "/";
-  const otherLocale: Locale = locale === "tr" ? "en" : "tr";
 
   const switchHref =
     locale === "tr"
@@ -34,12 +33,12 @@ export default function SiteHeader({ locale }: Props) {
 
   const homeHref = prefix || "/";
 
-  // Pre-uppercase with the TARGET language's own rules, not the ambient
-  // page's — "English" must always read "ENGLISH" (plain I), "Türkçe" must
-  // always read "TÜRKÇE" (dotted İ), regardless of which page it's shown
-  // on. See lib/i18n.ts's upperForLocale for why this can't be left to
-  // CSS text-transform + <html lang>.
-  const switchLabel = upperForLocale(dict.langSwitchLabel, otherLocale);
+  // Short code ("EN"/"TR"), not the spelled-out name — a full word in a
+  // pill next to short nav items like "90+" read oversized and out of
+  // place (real sites use the 2-letter code for this). Full name is kept
+  // as the aria-label for screen readers.
+  const switchCode = dict.langSwitchCode;
+  const switchLabel = dict.langSwitchLabel;
 
   return (
     <header className="site-header">
@@ -50,8 +49,8 @@ export default function SiteHeader({ locale }: Props) {
         <Link href={`${prefix}/seasons/2026-27`}>{dict.navSeasons}</Link>
         <Link href={`${prefix}/90-plus`}>{dict.navNinetyPlus}</Link>
         <Link href={`${prefix}/about`}>{dict.navAbout}</Link>
-        <Link href={switchHref} className="site-header__lang">
-          {switchLabel}
+        <Link href={switchHref} className="site-header__lang" aria-label={switchLabel}>
+          {switchCode}
         </Link>
       </nav>
     </header>

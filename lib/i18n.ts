@@ -7,7 +7,8 @@ type Dictionary = {
   navSeasons: string;
   navNinetyPlus: string;
   navAbout: string;
-  langSwitchLabel: string; // label for the link to the OTHER locale
+  langSwitchLabel: string; // full name of the OTHER locale, for aria-label only
+  langSwitchCode: string; // short code shown in the UI ("EN" / "TR")
   previousMatches: string;
   seasonAverage: string;
   ninetyPlusTitle: string;
@@ -28,6 +29,7 @@ const dictionaries: Record<Locale, Dictionary> = {
     navNinetyPlus: "90+",
     navAbout: "Hakkında",
     langSwitchLabel: "English",
+    langSwitchCode: "EN",
     previousMatches: "Önceki maçlar",
     seasonAverage: "Sezon ortalaması",
     ninetyPlusTitle: "90+",
@@ -46,6 +48,7 @@ const dictionaries: Record<Locale, Dictionary> = {
     navNinetyPlus: "90+",
     navAbout: "About",
     langSwitchLabel: "Türkçe",
+    langSwitchCode: "TR",
     previousMatches: "Previous matches",
     seasonAverage: "Season average",
     ninetyPlusTitle: "90+",
