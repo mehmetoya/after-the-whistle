@@ -61,9 +61,20 @@ function cardText(frontmatter: ReturnType<typeof loadMatch> & object) {
 
 function template(frontmatter: NonNullable<ReturnType<typeof loadMatch>>, variant: Variant) {
   const notes = cardText(frontmatter);
-  const scoreLabel = `${frontmatter.score.home}–${frontmatter.score.away}`;
   const isStory = variant === "story";
   const siteLabel = SITE_URL.replace(/^https?:\/\//, "");
+
+  // Headline must always say "Liverpool" explicitly and follow the same
+  // home-team-first convention as the post title itself (e.g. "Arsenal
+  // 1–2 Liverpool" away, "Liverpool 2–2 Nottingham Forest" home).
+  // The previous version always wrote `${opponent} ${score}` with no
+  // "Liverpool" anywhere — for a home match this both reversed the team
+  // order and, worse, produced a card that never named the blog's own
+  // club, so a shared card could read as the opponent's account.
+  const headline =
+    frontmatter.homeAway === "Home"
+      ? `Liverpool ${frontmatter.score.home}–${frontmatter.score.away} ${frontmatter.opponent}`
+      : `${frontmatter.opponent} ${frontmatter.score.home}–${frontmatter.score.away} Liverpool`;
 
   return {
     type: "div",
@@ -133,7 +144,7 @@ function template(frontmatter: NonNullable<ReturnType<typeof loadMatch>>, varian
                     fontWeight: 700,
                     lineHeight: 1.05,
                   },
-                  children: `${frontmatter.opponent} ${scoreLabel}`,
+                  children: headline,
                 },
               },
               {
