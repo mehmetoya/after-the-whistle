@@ -68,3 +68,27 @@ export function t(locale: Locale): Dictionary {
 export function localePrefix(locale: Locale): string {
   return locale === DEFAULT_LOCALE ? "" : `/${locale}`;
 }
+
+export const HOME_AWAY_LABEL: Record<Locale, { Home: string; Away: string }> = {
+  tr: { Home: "Ev Sahibi", Away: "Deplasman" },
+  en: { Home: "Home", Away: "Away" },
+};
+
+/**
+ * Uppercases text with an explicit locale rather than relying on the
+ * browser's ambient one. This matters because CSS `text-transform:
+ * uppercase` on a page with `lang="tr"` applies Turkish dotting rules to
+ * EVERYTHING under it — including English proper nouns like "Anfield" or
+ * "Premier League", which then wrongly come out as "ANFİELD" / "PREMİER
+ * LEAGUE" with a dotted İ. Proper nouns (competition, venue names, the
+ * language-switch label) should always uppercase as plain Latin regardless
+ * of the page's language; only genuinely-Turkish words (like the
+ * translated "Ev Sahibi") should get Turkish dotting.
+ */
+export function upperLatin(s: string): string {
+  return s.toLocaleUpperCase("en-US");
+}
+
+export function upperForLocale(s: string, locale: Locale): string {
+  return s.toLocaleUpperCase(locale === "tr" ? "tr-TR" : "en-US");
+}

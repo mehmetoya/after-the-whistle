@@ -3,6 +3,7 @@ import { getMatchSource, renderMatchMdx } from "@/lib/mdx";
 import ShareButtons from "@/components/ShareButtons";
 import StampBadge from "@/components/StampBadge";
 import { SITE_URL, computeContentHash, socialImageUrl, absoluteUrl } from "@/lib/social";
+import { upperLatin, upperForLocale, HOME_AWAY_LABEL } from "@/lib/i18n";
 
 const LOCALE = "en" as const;
 
@@ -38,7 +39,8 @@ export default async function MatchPageEn({ params }: { params: { slug: string }
 
       <header className="match-page__header">
         <p className="eyebrow">
-          {frontmatter.competition} · {frontmatter.venue} · {frontmatter.homeAway}
+          {upperLatin(frontmatter.competition)} · {upperLatin(frontmatter.venue)} ·{" "}
+          {upperForLocale(HOME_AWAY_LABEL.en[frontmatter.homeAway], "en")}
         </p>
         <h1>{frontmatter.title}</h1>
         <div className="match-page__score-row">
@@ -46,7 +48,7 @@ export default async function MatchPageEn({ params }: { params: { slug: string }
           <p className="match-page__score">
             {frontmatter.score.home}–{frontmatter.score.away}
           </p>
-          <span className="eyebrow">{frontmatter.opponent}</span>
+          <span className="eyebrow">{upperLatin(frontmatter.opponent)}</span>
         </div>
       </header>
 

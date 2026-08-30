@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { MatchIndexEntry } from "@/lib/social";
 import { socialImageUrl } from "@/lib/social";
 import StampBadge from "@/components/StampBadge";
-import { localePrefix, type Locale } from "@/lib/i18n";
+import { localePrefix, upperLatin, type Locale } from "@/lib/i18n";
 
 type Props = {
   match: MatchIndexEntry;
@@ -26,7 +26,7 @@ export default function MatchCard({ match, locale, size = "regular" }: Props) {
     <Link href={`${localePrefix(locale)}/matches/${match.slug}`} className={`match-card match-card--${size}`}>
       <img className="match-card__thumb" src={thumbSrc} alt={match.title} />
       <div className="match-card__meta">
-        <span className="eyebrow">{match.competition}</span>
+        <span className="eyebrow">{upperLatin(match.competition)}</span>
         <span className="eyebrow">{dateLabel}</span>
       </div>
       <h2 className="match-card__title">{match.title}</h2>
